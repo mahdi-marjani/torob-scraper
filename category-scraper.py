@@ -1,6 +1,8 @@
 import csv
 import requests
 
+product_crawled_count = 0
+
 # header
 with open(f"data.csv" , "w" , encoding="UTF-8" , newline="") as file:
 	writer = csv.writer(file)
@@ -41,6 +43,7 @@ def crawl_data(search_page_url):
 	search_results = search_response_json["results"]
  
 	for post in search_results:
+		global product_crawled_count
 		product_client_url = "https://torob.com" + post["web_client_absolute_url"]
 		product_more_info_api = post["more_info_url"]
 		product_response = requests.get(product_more_info_api)
@@ -60,6 +63,8 @@ def crawl_data(search_page_url):
 			product_client_url,
 			product_more_info_api
 		)
+		product_crawled_count += 1
+		print(product_crawled_count)
 
 	next_search_page_url = search_response_json["next"]
 	return next_search_page_url
